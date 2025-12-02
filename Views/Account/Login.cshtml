@@ -1,0 +1,166 @@
+﻿@model todo_list_with_mostafa.Models.LoginViewModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - Todo App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-container {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+            input[type="email"]:focus,
+            input[type="password"]:focus {
+                outline: none;
+                border-color: #667eea;
+            }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+            .checkbox-group input {
+                margin-right: 8px;
+            }
+
+            .checkbox-group label {
+                margin-bottom: 0;
+            }
+
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+            .btn-login:hover {
+                transform: translateY(-2px);
+            }
+
+        .register-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+        }
+
+            .register-link a {
+                color: #667eea;
+                text-decoration: none;
+                font-weight: 600;
+            }
+
+        .validation-summary-errors {
+            background: #fee;
+            border: 1px solid #fcc;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 20px;
+            color: #c33;
+        }
+
+            .validation-summary-errors ul {
+                list-style: none;
+            }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>Sign In</h2>
+
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="validation-summary-errors">
+                <ul>
+                    @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                    {
+                        <li>@error.ErrorMessage</li>
+                    }
+                </ul>
+            </div>
+        }
+
+        <form method="post" asp-action="Login">
+            <div class="form-group">
+                <label asp-for="Email">Email</label>
+                <input asp-for="Email" type="email" placeholder="your@email.com" required />
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Password">Password</label>
+                <input asp-for="Password" type="password" placeholder="Enter your password" required />
+            </div>
+
+            <div class="checkbox-group">
+                <input asp-for="RememberMe" type="checkbox" id="remember" />
+                <label for="remember">Remember me</label>
+            </div>
+
+            <button type="submit" class="btn-login">Sign In</button>
+
+            <div class="register-link">
+                Don't have an account? <a asp-action="Register">Sign Up</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

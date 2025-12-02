@@ -1,0 +1,686 @@
+﻿@model todo_list_with_mostafa.Models.TodoViewModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todo App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f3f2f1;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: white;
+            border-right: 1px solid #e1dfdd;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid #e1dfdd;
+        }
+
+        .account-switcher {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            background: #f3f2f1;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        .account-switcher:hover {
+            background: #e1dfdd;
+        }
+
+        .account-name {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .btn-logout {
+            padding: 6px 12px;
+            background: #d13438;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .groups-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .group-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            color: #333;
+            transition: background 0.2s;
+        }
+
+        .group-item:hover {
+            background: #f3f2f1;
+        }
+
+        .group-item.active {
+            background: #e1dfdd;
+            font-weight: 600;
+        }
+
+        .group-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 12px;
+        }
+
+        .add-group-section {
+            padding: 15px;
+            border-top: 1px solid #e1dfdd;
+        }
+
+        .add-group-btn {
+            width: 100%;
+            padding: 10px;
+            background: #0078d4;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: white;
+        }
+
+        .content-header {
+            padding: 20px 30px;
+            border-bottom: 1px solid #e1dfdd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .group-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .header-actions button {
+            padding: 8px 16px;
+            margin-left: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-add-account {
+            background: #0078d4;
+            color: white;
+        }
+
+        .btn-delete-group {
+            background: #d13438;
+            color: white;
+        }
+
+        .add-todo-section {
+            padding: 20px 30px;
+            border-bottom: 1px solid #e1dfdd;
+        }
+
+        .add-todo-form {
+            display: flex;
+            gap: 10px;
+        }
+
+        .add-todo-input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e1dfdd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .add-todo-input:focus {
+            outline: none;
+            border-color: #0078d4;
+        }
+
+        .btn-add-todo {
+            padding: 12px 24px;
+            background: #0078d4;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .todos-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 30px;
+        }
+
+        .todo-item {
+            background: #f9f9f9;
+            border: 1px solid #e1dfdd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+
+        .todo-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .todo-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .todo-title {
+            flex: 1;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .todo-item.completed .todo-title {
+            text-decoration: line-through;
+            color: #888;
+        }
+
+        .todo-due-date {
+            color: #0078d4;
+            font-size: 12px;
+            margin-left: 32px;
+            margin-bottom: 10px;
+        }
+
+        .todo-notes {
+            margin-left: 32px;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .subtasks-list {
+            margin-left: 32px;
+            margin-top: 10px;
+        }
+
+        .subtask-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px;
+            background: white;
+            border-radius: 4px;
+            margin-bottom: 5px;
+        }
+
+        .subtask-checkbox {
+            width: 16px;
+            height: 16px;
+        }
+
+        .subtask-title {
+            flex: 1;
+            font-size: 14px;
+        }
+
+        .subtask-item.completed .subtask-title {
+            text-decoration: line-through;
+            color: #888;
+        }
+
+        .add-subtask-form {
+            margin-left: 32px;
+            margin-top: 10px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .add-subtask-input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #e1dfdd;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+
+        .btn-add-subtask {
+            padding: 8px 16px;
+            background: #0078d4;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .todo-actions {
+            margin-left: 32px;
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .btn-delete {
+            padding: 6px 12px;
+            background: #d13438;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .btn-toggle-details {
+            padding: 6px 12px;
+            background: #0078d4;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .todo-details {
+            display: none;
+            margin-left: 32px;
+            margin-top: 10px;
+            padding: 10px;
+            background: white;
+            border-radius: 4px;
+        }
+
+        .todo-details.show {
+            display: block;
+        }
+
+        .detail-group {
+            margin-bottom: 10px;
+        }
+
+        .detail-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 12px;
+            color: #666;
+            font-weight: 600;
+        }
+
+        .detail-group input,
+        .detail-group textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #e1dfdd;
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .btn-save-details {
+            padding: 8px 16px;
+            background: #0078d4;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .modal-content h3 {
+            margin-bottom: 20px;
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e1dfdd;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .btn-cancel {
+            padding: 10px 20px;
+            background: #e1dfdd;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-confirm {
+            padding: 10px 20px;
+            background: #0078d4;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="account-switcher" onclick="showAccountModal()">
+                    <span class="account-name">@(Model.CurrentAccount?.AccountName ?? "Personal")</span>
+                    <span>▼</span>
+                </div>
+                
+                <div class="user-info">
+                    <span class="user-name">@User.Identity.Name</span>
+                    <form method="post" asp-controller="Account" asp-action="Logout" style="display:inline;">
+                        <button type="submit" class="btn-logout">Sign Out</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="groups-list">
+                @foreach (var group in Model.Groups)
+                {
+                    <a href="@Url.Action("Index", new { groupId = group.Id })" 
+                       class="group-item @(Model.SelectedGroup?.Id == group.Id ? "active" : "")">
+                        <span class="group-color" style="background-color: @group.Color"></span>
+                        <span>@group.Name</span>
+                    </a>
+                }
+            </div>
+
+            <div class="add-group-section">
+                <button class="add-group-btn" onclick="showGroupModal()">+ New Group</button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            @if (Model.SelectedGroup != null)
+            {
+                <div class="content-header">
+                    <h1 class="group-title" style="color: @Model.SelectedGroup.Color">@Model.SelectedGroup.Name</h1>
+                    <div class="header-actions">
+                        <button class="btn-add-account" onclick="showAddAccountModal()">+ Add Account</button>
+                        <form method="post" asp-action="DeleteGroup" asp-route-id="@Model.SelectedGroup.Id" style="display:inline;">
+                            <button type="submit" class="btn-delete-group" onclick="return confirm('Delete this group and all its tasks?')">Delete Group</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="add-todo-section">
+                    <form method="post" asp-action="CreateTodo" class="add-todo-form">
+                        <input type="hidden" name="groupId" value="@Model.SelectedGroup.Id" />
+                        <input type="text" name="title" class="add-todo-input" placeholder="Add a task" required />
+                        <button type="submit" class="btn-add-todo">Add</button>
+                    </form>
+                </div>
+
+                <div class="todos-list">
+                    @foreach (var todo in Model.TodoItems)
+                    {
+                        <div class="todo-item @(todo.IsCompleted ? "completed" : "")">
+                            <div class="todo-header">
+                                <form method="post" asp-action="ToggleTodo" style="display:inline;">
+                                    <input type="hidden" name="id" value="@todo.Id" />
+                                    <input type="hidden" name="groupId" value="@Model.SelectedGroup.Id" />
+                                    <input type="checkbox" class="todo-checkbox" @(todo.IsCompleted ? "checked" : "") onchange="this.form.submit()" />
+                                </form>
+                                <span class="todo-title">@todo.Title</span>
+                            </div>
+
+                            @if (todo.DueDate.HasValue)
+                            {
+                                <div class="todo-due-date">📅 Due: @todo.DueDate.Value.ToString("MMM dd, yyyy")</div>
+                            }
+
+                            @if (!string.IsNullOrEmpty(todo.Notes))
+                            {
+                                <div class="todo-notes">@todo.Notes</div>
+                            }
+
+                            @if (todo.Subtasks != null && todo.Subtasks.Any())
+                            {
+                                <div class="subtasks-list">
+                                    @foreach (var subtask in todo.Subtasks)
+                                    {
+                                        <div class="subtask-item @(subtask.IsCompleted ? "completed" : "")">
+                                            <form method="post" asp-action="ToggleSubtask" style="display:inline;">
+                                                <input type="hidden" name="id" value="@subtask.Id" />
+                                                <input type="hidden" name="groupId" value="@Model.SelectedGroup.Id" />
+                                                <input type="checkbox" class="subtask-checkbox" @(subtask.IsCompleted ? "checked" : "") onchange="this.form.submit()" />
+                                            </form>
+                                            <span class="subtask-title">@subtask.Title</span>
+                                        </div>
+                                    }
+                                </div>
+                            }
+
+                            <form method="post" asp-action="CreateSubtask" class="add-subtask-form">
+                                <input type="hidden" name="todoId" value="@todo.Id" />
+                                <input type="hidden" name="groupId" value="@Model.SelectedGroup.Id" />
+                                <input type="text" name="title" class="add-subtask-input" placeholder="Add subtask" />
+                                <button type="submit" class="btn-add-subtask">Add</button>
+                            </form>
+
+                            <div class="todo-actions">
+                                <button class="btn-toggle-details" onclick="toggleDetails(@todo.Id)">Edit Details</button>
+                                <form method="post" asp-action="DeleteTodo" style="display:inline;">
+                                    <input type="hidden" name="id" value="@todo.Id" />
+                                    <input type="hidden" name="groupId" value="@Model.SelectedGroup.Id" />
+                                    <button type="submit" class="btn-delete" onclick="return confirm('Delete this task?')">Delete</button>
+                                </form>
+                            </div>
+
+                            <div class="todo-details" id="details-@todo.Id">
+                                <form method="post" asp-action="UpdateTodo">
+                                    <input type="hidden" name="id" value="@todo.Id" />
+                                    <input type="hidden" name="groupId" value="@Model.SelectedGroup.Id" />
+                                    
+                                    <div class="detail-group">
+                                        <label>Title</label>
+                                        <input type="text" name="title" value="@todo.Title" required />
+                                    </div>
+
+                                    <div class="detail-group">
+                                        <label>Notes</label>
+                                        <textarea name="notes" rows="3">@todo.Notes</textarea>
+                                    </div>
+
+                                    <div class="detail-group">
+                                        <label>Due Date</label>
+                                        <input type="date" name="dueDate" value="@(todo.DueDate?.ToString("yyyy-MM-dd"))" />
+                                    </div>
+
+                                    <button type="submit" class="btn-save-details">Save Changes</button>
+                                </form>
+                            </div>
+                        </div>
+                    }
+
+                    @if (!Model.TodoItems.Any())
+                    {
+                        <p style="text-align:center; color:#999; padding:40px;">No tasks yet. Add one above!</p>
+                    }
+                </div>
+            }
+            else
+            {
+                <div style="display:flex; align-items:center; justify-content:center; height:100%; color:#999;">
+                    <p>Select or create a group to get started</p>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Add Group Modal -->
+    <div id="groupModal" class="modal">
+        <div class="modal-content">
+            <h3>Create New Group</h3>
+            <form method="post" asp-action="CreateGroup">
+                <input type="text" name="name" placeholder="Group name" required />
+                <input type="color" name="color" value="#0078D4" />
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="hideGroupModal()">Cancel</button>
+                    <button type="submit" class="btn-confirm">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Account Modal -->
+    <div id="addAccountModal" class="modal">
+        <div class="modal-content">
+            <h3>Add Account</h3>
+            <form method="post" asp-action="CreateAccount">
+                <input type="text" name="accountName" placeholder="Account name" required />
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="hideAddAccountModal()">Cancel</button>
+                    <button type="submit" class="btn-confirm">Add</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Account Switcher Modal -->
+    <div id="accountModal" class="modal">
+        <div class="modal-content">
+            <h3>Switch Account</h3>
+            @foreach (var account in Model.Accounts)
+            {
+                <form method="post" asp-action="SwitchAccount">
+                    <input type="hidden" name="accountId" value="@account.Id" />
+                    <button type="submit" class="btn-confirm" style="width:100%; margin-bottom:10px;">
+                        @account.AccountName @(account.IsDefault ? "✓" : "")
+                    </button>
+                </form>
+            }
+            <button type="button" class="btn-cancel" onclick="hideAccountModal()" style="width:100%;">Cancel</button>
+        </div>
+    </div>
+
+    <script>
+        function showGroupModal() {
+            document.getElementById('groupModal').classList.add('show');
+        }
+
+        function hideGroupModal() {
+            document.getElementById('groupModal').classList.remove('show');
+        }
+
+        function showAddAccountModal() {
+            document.getElementById('addAccountModal').classList.add('show');
+        }
+
+        function hideAddAccountModal() {
+            document.getElementById('addAccountModal').classList.remove('show');
+        }
+
+        function showAccountModal() {
+            document.getElementById('accountModal').classList.add('show');
+        }
+
+        function hideAccountModal() {
+            document.getElementById('accountModal').classList.remove('show');
+        }
+
+        function toggleDetails(todoId) {
+            const details = document.getElementById('details-' + todoId);
+            details.classList.toggle('show');
+        }
+
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('show');
+            }
+        }
+    </script>
+</body>
+</html>
