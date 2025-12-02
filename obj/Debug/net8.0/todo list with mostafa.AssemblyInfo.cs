@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("todo list with mostafa")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3bbc483152baecbe70c138f2daa02f3c9a3bbf75")]
 [assembly: System.Reflection.AssemblyProductAttribute("todo list with mostafa")]
 [assembly: System.Reflection.AssemblyTitleAttribute("todo list with mostafa")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
